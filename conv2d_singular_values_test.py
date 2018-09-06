@@ -4,7 +4,7 @@ import tensorflow as tf
 import time
 
 from tensorflow.python.platform import test
-import block_circulant_singular_values as bcsv
+import conv2d_singular_values as convsv
 
 class CirculantSingularTest(test.TestCase):
 
@@ -90,7 +90,7 @@ class CirculantSingularTest(test.TestCase):
     print("Time for SVD Full Matrix:", time.time() - start)
 
     start = time.time()
-    singular_vals_by_freq_pair = bcsv.SVD_Conv_Tensor_NP(filter, [n, n])
+    singular_vals_by_freq_pair = convsv.SVD_Conv_Tensor_NP(filter, [n, n])
     print("Short algorithm time:", time.time() - start)
 
     # sort singular values in decreasing order
@@ -110,7 +110,7 @@ class CirculantSingularTest(test.TestCase):
     n = 32
 
     start = time.time()
-    singular_vals_by_freq_pair = bcsv.SVD_Conv_Tensor_NP(filter, [n, n])
+    singular_vals_by_freq_pair = convsv.SVD_Conv_Tensor_NP(filter, [n, n])
 
     print("NP SVD time:", time.time() - start)
     # sort singular values in decreasing order
@@ -118,7 +118,7 @@ class CirculantSingularTest(test.TestCase):
 
     with self.test_session() as sess:
       filter_tf = tf.constant(filter, dtype=tf.float32)
-      D2_tf = bcsv.SVD_Conv_Tensor(filter_tf, [n, n])
+      D2_tf = convsv.SVD_Conv_Tensor(filter_tf, [n, n])
 
       tf.global_variables_initializer().run()
       start = time.time()
@@ -137,17 +137,17 @@ class CirculantSingularTest(test.TestCase):
     filter_shape = (filter_x, filter_y, num_inp_channels, num_out_channels)
     filter = np.random.randint(low=-8, high=8,size=filter_shape)
     n = 32
-    singular_vals = bcsv.SVD_Conv_Tensor_NP(filter, [n, n])
-    clipped_filter = bcsv.Clip_OperatorNorm_NP(filter, [n, n],
+    singular_vals = convsv.SVD_Conv_Tensor_NP(filter, [n, n])
+    clipped_filter = convsv.Clip_OperatorNorm_NP(filter, [n, n],
                                                singular_vals.max())
     self.assertAllClose(filter, clipped_filter)
 
     clip_value = 10
     last_max = singular_vals.max()
     for round in range(10):
-      clipped_filter = bcsv.Clip_OperatorNorm_NP(clipped_filter, [n, n],
+      clipped_filter = convsv.Clip_OperatorNorm_NP(clipped_filter, [n, n],
                                                  clip_value)
-      clipped_singular_vals = bcsv.SVD_Conv_Tensor_NP(clipped_filter, [n, n])
+      clipped_singular_vals = convsv.SVD_Conv_Tensor_NP(clipped_filter, [n, n])
       self.assertTrue(last_max > clipped_singular_vals.max())
       last_max = clipped_singular_vals.max()
 
@@ -161,12 +161,12 @@ class CirculantSingularTest(test.TestCase):
     filter = np.random.randint(low=-8, high=8,size=filter_shape)
     n = 32
     start = time.time()
-    clipped_filter = bcsv.Clip_OperatorNorm_NP(filter, [n, n], 10)
+    clipped_filter = convsv.Clip_OperatorNorm_NP(filter, [n, n], 10)
     print("Numpy Clipping Time:", time.time() - start)
 
     with self.test_session() as sess:
       filter_tf = tf.constant(filter, dtype=tf.float32)
-      clipped_filter_tf, norm = bcsv.Clip_OperatorNorm(filter_tf, [n, n], 10)
+      clipped_filter_tf, norm = convsv.Clip_OperatorNorm(filter_tf, [n, n], 10)
 
       tf.global_variables_initializer().run()
       start = time.time()
@@ -183,8 +183,8 @@ class CirculantSingularTest(test.TestCase):
     filter_shape = (filter_x, filter_y, num_inp_channels, num_out_channels)
     filter = np.random.randint(low=-8, high=8, size=filter_shape)
     n = 16
-    inverse_filter = bcsv.Invert_Operator_NP(filter, [n, n])
-    inverse_inverse_filter = bcsv.Invert_Operator_NP(inverse_filter, [n, n])
+    inverse_filter = convsv.Invert_Operator_NP(filter, [n, n])
+    inverse_inverse_filter = convsv.Invert_Operator_NP(inverse_filter, [n, n])
     #print filter
     #print inverse_filter
     #print inverse_inverse_filter

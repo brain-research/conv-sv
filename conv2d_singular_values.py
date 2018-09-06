@@ -62,8 +62,8 @@ def Clip_OperatorNorm_NP(filter, inp_shape, clip_to):
 
 def Invert_Operator_NP(filter, inp_shape):
   # computed the inverse of a filter. However the result is much bigger,
-  # (n x n) instead of (k x k), and we do not know a way to make it smaller.
-  # This is not so useful, as edge effects are now very important.
+  # (n x n) instead of (k x k), therefore, we later project it into (k x k)
+  
 
   # compute the singular values using FFT
   # first compute the transforms for each pair of input and output channels
