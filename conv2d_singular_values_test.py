@@ -175,43 +175,7 @@ class CirculantSingularTest(test.TestCase):
       self.assertAllClose(clipped_filter2, clipped_filter, atol=3e-5)
 
 
-  def testInverse(self):
-    num_inp_channels = 2
-    num_out_channels = 3
-    filter_x = 3
-    filter_y = 4
-    filter_shape = (filter_x, filter_y, num_inp_channels, num_out_channels)
-    filter = np.random.randint(low=-8, high=8, size=filter_shape)
-    n = 16
-    inverse_filter = convsv.Invert_Operator_NP(filter, [n, n])
-    inverse_inverse_filter = convsv.Invert_Operator_NP(inverse_filter, [n, n])
-    #print filter
-    #print inverse_filter
-    #print inverse_inverse_filter
-    args = [range(d) for d in filter_shape]
-    proj_filter = inverse_inverse_filter[np.ix_(*args)]
-    self.assertAllClose(filter, proj_filter, atol=3e-4)
-
-  """
-  def testStrides(self):
-    filter = np.array([2, 7, -1, 16])
-    n = 30
-    stride = 2
-    # Compute the singular values directly
-    transform_mat = np.zeros([n, n])
-    for i in range(n):
-      for j in range(filter.size):
-        transform_mat[i, (j+i*stride) % n] = filter[j]
-    U, D, V = np.linalg.svd(transform_mat)
-    print D
-    print np.linalg.eig(transform_mat)
-
-    transform_mat = np.zeros([n/stride, n])
-    for i in range(n/stride):
-      for j in range(filter.size):
-        transform_mat[i, (j+i*stride) % n] = filter[j]
-    U, D, V = np.linalg.svd(transform_mat)
-    print D * math.sqrt(stride)
+ 
   """
 
 if __name__ == '__main__':
