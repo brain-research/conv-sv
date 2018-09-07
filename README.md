@@ -21,7 +21,7 @@ Requirements
 
 + Tensorflow
 + Numpy
-+ [pyglib](https://github.com/benley/pyglib "Pyglib")
+
 
 
 ## Citation ##
